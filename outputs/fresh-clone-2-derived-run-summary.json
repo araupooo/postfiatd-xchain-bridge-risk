@@ -1,0 +1,12 @@
+{
+ "pack": "Cross-Chain Bridge Risk in postfiatd",
+ "pinned_commit": "0085a1ff885d6a446369cf73a4430f75af22be55",
+ "scenario_count": 13,
+ "rule_count": 45,
+ "steps": {
+  "extract_excerpts": "pass",
+  "xchain_bridge_model_config": "pass",
+  "simulator": "pass",
+  "probe": "pass"
+ }
+}

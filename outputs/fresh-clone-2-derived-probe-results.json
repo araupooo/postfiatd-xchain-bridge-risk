@@ -1,0 +1,83 @@
+{
+ "checks": [
+  {
+   "check": "pinned checkout HEAD equals the pinned commit",
+   "detail": "HEAD=0085a1ff885d6a446369cf73a4430f75af22be55",
+   "id": "A-00",
+   "pass": true
+  },
+  {
+   "check": "45 rules: 38 VERIFIED anchors inside cited ranges, 4 SPECIFIED (external URLs), 2 MODELLED, 1 UNTESTABLE, none with a faked source",
+   "detail": "counts={'MODELLED': 2, 'SPECIFIED': 4, 'UNTESTABLE': 1, 'VERIFIED': 38}",
+   "id": "A-01",
+   "pass": true
+  },
+  {
+   "check": "per-scenario arithmetic reconciles; totals 13 scenarios / 18 runs / safe 8 / degraded 3 / exploited 4 / halted 3; matrix rows == runs; honest/live weights re-derived; outcomes and reasons re-derived from the scenario params",
+   "detail": "totals={'degraded': 3, 'exploited': 4, 'halted': 3, 'runs': 18, 'safe': 8, 'scenarios': 13} outcomes={'safe': 8, 'exploited': 4, 'degraded': 3, 'halted': 3} ",
+   "id": "B-01",
+   "pass": true
+  },
+  {
+   "check": "threshold rows match the model math for 7 witness/quorum pairs; limits table matches the pinned constants (8/32 witnesses, min 1, quorum 1..total weight, no bridge minimum, 128 window / 127 outstanding, claim IDs 1..4294967295, no expiry, no throttle, XRP reward, XRP-XRP minimum)",
+   "detail": "all match",
+   "id": "C-01",
+   "pass": true
+  },
+  {
+   "check": "xbridgeMaxAccountCreateClaims 128 (XChainBridge.h:29), minMultiSigners 1 / max 8 (STTx.h:53/:60), lsfDisableMaster (:132), weight >= quorum (:237), tecXCHAIN_CLAIM_NO_QUORUM (:240), divide(rewardPool, den) (:688), outerSb.erase(sleClaimID) (:756), temXCHAIN_BAD_PROOF (:1226), tecDUPLICATE (:1464), sfXChainClaimID = 0 (:1522), tecXCHAIN_SELF_COMMIT (:1915), claimID + 1 (:2050), ripple::verify (XChainAttestations.cpp:105), rewardAmount in the account-create match (:645)",
+   "detail": "all 15 tokens at recorded lines",
+   "id": "D-01",
+   "pass": true
+  },
+  {
+   "check": "re-attestation replaces the old attestation; claimHelper erases attestations from non-listed accounts; onClaim ignores dst; the account-create match includes the reward amount; claim ID keylets are namespaced per bridge",
+   "detail": "quorum logic verified",
+   "id": "E-01",
+   "pass": true
+  },
+  {
+   "check": "matrix == results == scenarios (13); findings 12 (HIGH 3, MEDIUM 6, LOW 3), claims 24 (16/2/4/2), risks 14 (HIGH 3, MEDIUM 8, LOW 3), gaps 8; excerpts 44 across 7 files agree across manifest, files, hashes",
+   "detail": "claims=24 risks=14 gaps=8 excerpts=44 files=7",
+   "id": "F-01",
+   "pass": true
+  },
+  {
+   "check": "determinism: simulator re-run reproduces byte-identical results and matrix (full SHA-256)",
+   "detail": "results shipped=6acdd9a3c631f46aca3c143b58ded36d4eb97321526da6f4dd37e9ea190d3a81 rerun=6acdd9a3c631f46aca3c143b58ded36d4eb97321526da6f4dd37e9ea190d3a81; matrix shipped=6b459ece4069f978314e491ee1cb164c3e26c2c89efef4e874ffdf0f6c8c49ff rerun=6b459ece4069f978314e491ee1cb164c3e26c2c89efef4e874ffdf0f6c8c49ff",
+   "id": "G-01",
+   "pass": true
+  },
+  {
+   "check": "every excerpt digest matches source-hashes.json; every manifest blob SHA/size matches the checkout; run-manifest digests match shipped derived files; recorded reproduction log digests match the fresh-clone logs on disk; recorded verify-digests digest matches outputs/verify-digests.log when present",
+   "detail": "manifest digests match",
+   "id": "H-01",
+   "pass": true
+  },
+  {
+   "check": "absence findings re-grepped: expir 0 hits; reorg 0 hits; minWitness 0 hits; DisableMaster and SignerList never appear in the bridge-creation path (XChainBridge.cpp:1374-1545); AttestationRewardAccount never appears in XChainBridge.cpp",
+   "detail": "expir=0 reorg=0 minWitness=0 creation-path=0 AttestationRewardAccount=0",
+   "id": "I-01",
+   "pass": true
+  },
+  {
+   "check": "the header comment says the door master key will be disabled while the code never enforces it; the docs one-witness quote appears in the citations; the claim ID counter is uint32; the account-create reward paid is the triggering attestation's value",
+   "detail": "divergence tokens verified",
+   "id": "J-01",
+   "pass": true
+  },
+  {
+   "check": "timing sanity: total probe elapsed_ms is non-negative (loose band, never exact)",
+   "detail": "value not recorded; never compared",
+   "id": "T-01",
+   "pass": true
+  }
+ ],
+ "matrix_sha256": "6b459ece4069f978314e491ee1cb164c3e26c2c89efef4e874ffdf0f6c8c49ff",
+ "pack": "Cross-Chain Bridge Risk in postfiatd",
+ "passed": 12,
+ "pinned_commit": "0085a1ff885d6a446369cf73a4430f75af22be55",
+ "results_file": "outputs/derived/xchain-bridge-results.json",
+ "results_sha256": "6acdd9a3c631f46aca3c143b58ded36d4eb97321526da6f4dd37e9ea190d3a81",
+ "total": 12
+}

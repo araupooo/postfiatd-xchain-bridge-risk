@@ -1,0 +1,1030 @@
+{
+ "constants": {
+  "account_create_max": 128,
+  "claim_id_first": 1,
+  "claim_id_max": 4294967295,
+  "max_witnesses": 8,
+  "max_witnesses_expanded": 32,
+  "min_witnesses": 1,
+  "quorum_min": 1
+ },
+ "limits_table": [
+  {
+   "item": "maximum witnesses",
+   "unit": "signers",
+   "value": 8
+  },
+  {
+   "item": "maximum witnesses with ExpandedSignerList",
+   "unit": "signers",
+   "value": 32
+  },
+  {
+   "item": "minimum witnesses",
+   "unit": "signer",
+   "value": 1
+  },
+  {
+   "item": "minimum quorum",
+   "unit": "weight",
+   "value": 1
+  },
+  {
+   "item": "maximum quorum",
+   "unit": "weight",
+   "value": "total signer weight"
+  },
+  {
+   "item": "minimum witness count enforced by bridge code",
+   "unit": "none: 1-of-1 allowed",
+   "value": null
+  },
+  {
+   "item": "account-create claim window",
+   "unit": "claims",
+   "value": 128
+  },
+  {
+   "item": "account-create claims outstanding at most",
+   "unit": "claims",
+   "value": 127
+  },
+  {
+   "item": "first claim ID",
+   "unit": "id",
+   "value": 1
+  },
+  {
+   "item": "maximum claim ID",
+   "unit": "id",
+   "value": 4294967295
+  },
+  {
+   "item": "claim ID expiry",
+   "unit": "none: claims never expire",
+   "value": null
+  },
+  {
+   "item": "attestation throttle",
+   "unit": "none beyond the ledger transaction fee",
+   "value": null
+  },
+  {
+   "item": "reward currency",
+   "unit": "currency",
+   "value": "XRP"
+  },
+  {
+   "item": "minimum account-create amount scope",
+   "unit": "scope",
+   "value": "XRP-XRP bridges only"
+  }
+ ],
+ "pack": "Cross-Chain Bridge Risk in postfiatd",
+ "pinned_commit": "0085a1ff885d6a446369cf73a4430f75af22be55",
+ "scenarios": [
+  {
+   "id": "S-01",
+   "runs": [
+    {
+     "colluding": 1,
+     "events": [
+      {
+       "round": 0,
+       "text": "one witness attests to a forged event for funds never committed on the source chain"
+      },
+      {
+       "round": 1,
+       "text": "forged weight 1 is below quorum 2; honest weight 2 reaches quorum; funds move only for the real event"
+      },
+      {
+       "round": 2,
+       "text": "honest weight 2 reaches quorum 2: real event finalizes"
+      }
+     ],
+     "honest_weight": 2,
+     "label": "A",
+     "live_weight": 3,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 1,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 2,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 3
+     },
+     "quorum": 2,
+     "reason": "honest_weight_reaches_quorum",
+     "removed": 0,
+     "rounds": 2,
+     "stalled": 0,
+     "title": "Forged attestation, 1 of 3 witnesses colluding",
+     "witnesses": 3
+    },
+    {
+     "colluding": 2,
+     "events": [
+      {
+       "round": 0,
+       "text": "two witnesses attest to a forged event for funds never committed on the source chain"
+      },
+      {
+       "round": 1,
+       "text": "forged weight 2 reaches quorum 2; funds move to the attacker's destination"
+      },
+      {
+       "round": 2,
+       "text": "colluding weight 2 reaches quorum 2: forged event finalizes"
+      }
+     ],
+     "honest_weight": 1,
+     "label": "B",
+     "live_weight": 3,
+     "outcome": "exploited",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 2,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 2,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 3
+     },
+     "quorum": 2,
+     "reason": "colluding_weight_reaches_quorum",
+     "removed": 0,
+     "rounds": 2,
+     "stalled": 0,
+     "title": "Forged attestation, 2 of 3 witnesses colluding",
+     "witnesses": 3
+    }
+   ],
+   "title": "Forged attestation, small bridge"
+  },
+  {
+   "id": "S-02",
+   "runs": [
+    {
+     "colluding": 2,
+     "events": [
+      {
+       "round": 0,
+       "text": "two witnesses attest to a forged event"
+      },
+      {
+       "round": 1,
+       "text": "forged weight 2 is below quorum 3; honest weight 3 reaches quorum; the forged event never finalizes"
+      },
+      {
+       "round": 3,
+       "text": "honest weight 3 reaches quorum 3: real event finalizes"
+      }
+     ],
+     "honest_weight": 3,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 2,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "honest_weight_reaches_quorum",
+     "removed": 0,
+     "rounds": 3,
+     "stalled": 0,
+     "title": "Collusion, 2 of 5 witnesses",
+     "witnesses": 5
+    },
+    {
+     "colluding": 3,
+     "events": [
+      {
+       "round": 0,
+       "text": "three witnesses attest to a forged event"
+      },
+      {
+       "round": 1,
+       "text": "forged weight 3 reaches quorum 3; funds move to the attacker's destination"
+      },
+      {
+       "round": 3,
+       "text": "colluding weight 3 reaches quorum 3: forged event finalizes"
+      }
+     ],
+     "honest_weight": 2,
+     "label": "B",
+     "live_weight": 5,
+     "outcome": "exploited",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 3,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "colluding_weight_reaches_quorum",
+     "removed": 0,
+     "rounds": 3,
+     "stalled": 0,
+     "title": "Collusion, 3 of 5 witnesses",
+     "witnesses": 5
+    }
+   ],
+   "title": "Witness collusion, medium bridge"
+  },
+  {
+   "id": "S-03",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "one witness stalls and never attests"
+      },
+      {
+       "round": 1,
+       "text": "honest weight 4 reaches quorum 3; the claim finalizes on schedule"
+      },
+      {
+       "round": 3,
+       "text": "honest weight 4 reaches quorum 3: real event finalizes"
+      }
+     ],
+     "honest_weight": 4,
+     "label": "A",
+     "live_weight": 4,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 1,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "honest_weight_reaches_quorum",
+     "removed": 0,
+     "rounds": 3,
+     "stalled": 1,
+     "title": "One witness stalled",
+     "witnesses": 5
+    },
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "three witnesses stall and never attest"
+      },
+      {
+       "round": 1,
+       "text": "honest weight 2 is below quorum 3 and no witness can make up the shortfall; the claim waits until a witness returns"
+      },
+      {
+       "round": 2,
+       "text": "honest weight 2 and colluding weight 0 are both below quorum 3: claim waits"
+      }
+     ],
+     "honest_weight": 2,
+     "label": "B",
+     "live_weight": 2,
+     "outcome": "degraded",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 3,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "neither_side_reaches_quorum",
+     "removed": 0,
+     "rounds": 2,
+     "stalled": 3,
+     "title": "Three witnesses stalled",
+     "witnesses": 5
+    }
+   ],
+   "title": "Stalled witnesses"
+  },
+  {
+   "id": "S-04",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "the claim ID was destroyed after the first successful claim"
+      },
+      {
+       "round": 1,
+       "text": "the replayed claim finds no claim ID object and is rejected; no funds move twice"
+      },
+      {
+       "round": 1,
+       "text": "replayed claim finds no claim ID object: tecXCHAIN_NO_CLAIM_ID"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": true,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "claim_id_destroyed_after_funds_moved",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Replay after a successful claim",
+     "witnesses": 5
+    }
+   ],
+   "title": "Replayed claims"
+  },
+  {
+   "id": "S-05",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "one witness is removed from the door's signer list after attesting"
+      },
+      {
+       "round": 1,
+       "text": "its attestation is erased, but honest weight 4 still reaches quorum 3; the claim finalizes"
+      },
+      {
+       "round": 3,
+       "text": "honest weight 4 reaches quorum 3: real event finalizes"
+      }
+     ],
+     "honest_weight": 4,
+     "label": "A",
+     "live_weight": 4,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 1,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "honest_weight_reaches_quorum",
+     "removed": 1,
+     "rounds": 3,
+     "stalled": 0,
+     "title": "One witness removed mid-claim",
+     "witnesses": 5
+    },
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "three witnesses are removed from the door's signer list after attesting"
+      },
+      {
+       "round": 1,
+       "text": "their attestations are erased; live weight 2 is below quorum 3 and cannot recover without a signer-list change"
+      },
+      {
+       "round": 2,
+       "text": "live weight 2 is below quorum 3 and cannot recover without a signer-list change"
+      }
+     ],
+     "honest_weight": 2,
+     "label": "B",
+     "live_weight": 2,
+     "outcome": "halted",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 3,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "signer_list_removal_makes_quorum_unreachable",
+     "removed": 3,
+     "rounds": 2,
+     "stalled": 0,
+     "title": "Three witnesses removed mid-claim",
+     "witnesses": 5
+    }
+   ],
+   "title": "Signer-list removal mid-claim"
+  },
+  {
+   "id": "S-06",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "the attacker holds the door's master key, but the master key was disabled at setup"
+      },
+      {
+       "round": 1,
+       "text": "the disabled master key signs nothing; funds still move only on witness quorum"
+      },
+      {
+       "round": 1,
+       "text": "disabled master key signs nothing: witness quorum still gates the funds"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": true,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "disabled_master_key_cannot_sign",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Door master key stolen, master key disabled",
+     "witnesses": 5
+    },
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "the attacker holds the door's master key, and the master key was never disabled"
+      },
+      {
+       "round": 1,
+       "text": "the attacker signs door transactions directly; witness quorum is bypassed entirely"
+      },
+      {
+       "round": 1,
+       "text": "attacker signs door transactions directly: no witness needed"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "B",
+     "live_weight": 5,
+     "outcome": "exploited",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": true,
+      "master_disabled": false,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "door_master_key_bypasses_quorum",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Door master key stolen, master key enabled",
+     "witnesses": 5
+    }
+   ],
+   "title": "Door-account key compromise"
+  },
+  {
+   "id": "S-07",
+   "runs": [
+    {
+     "colluding": 1,
+     "events": [
+      {
+       "round": 0,
+       "text": "the single witness attests to a forged event"
+      },
+      {
+       "round": 1,
+       "text": "forged weight 1 reaches quorum 1; the 1-of-1 bridge is fully compromised by one witness"
+      },
+      {
+       "round": 1,
+       "text": "colluding weight 1 reaches quorum 1: forged event finalizes"
+      }
+     ],
+     "honest_weight": 0,
+     "label": "A",
+     "live_weight": 1,
+     "outcome": "exploited",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 1,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 1,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 1
+     },
+     "quorum": 1,
+     "reason": "colluding_weight_reaches_quorum",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Single witness compromised",
+     "witnesses": 1
+    }
+   ],
+   "title": "Single-witness bridge"
+  },
+  {
+   "id": "S-08",
+   "runs": [
+    {
+     "colluding": 4,
+     "events": [
+      {
+       "round": 0,
+       "text": "four of eight witnesses collude on a forged event under a quorum of 5"
+      },
+      {
+       "round": 1,
+       "text": "forged weight 4 is below quorum 5 and honest weight 4 is also below quorum 5; neither side can finalize"
+      },
+      {
+       "round": 8,
+       "text": "honest weight 4 and colluding weight 4 are both below quorum 5: claim waits"
+      }
+     ],
+     "honest_weight": 4,
+     "label": "A",
+     "live_weight": 8,
+     "outcome": "degraded",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 4,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 5,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 8
+     },
+     "quorum": 5,
+     "reason": "neither_side_reaches_quorum",
+     "removed": 0,
+     "rounds": 8,
+     "stalled": 0,
+     "title": "Even-n majority quorum, 4 colluding",
+     "witnesses": 8
+    }
+   ],
+   "title": "Quorum sweep, even witness count"
+  },
+  {
+   "id": "S-09",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "an account-create attestation arrives for createCount claimCount + 2 while claimCount + 1 is still open"
+      },
+      {
+       "round": 1,
+       "text": "the out-of-order claim is rejected; no account is created and no funds move"
+      },
+      {
+       "round": 1,
+       "text": "createCount must equal claimCount + 1: rejected"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": true,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "out_of_order_account_create_claim_rejected",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Out-of-order account-create claim",
+     "witnesses": 5
+    }
+   ],
+   "title": "Account-create ordering"
+  },
+  {
+   "id": "S-10",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "one witness submits an attestation with an inflated SignatureReward"
+      },
+      {
+       "round": 1,
+       "text": "its attestation does not match the quorum subset on reward amount, so it cannot join the quorum; the honest subset finalizes on the correct reward"
+      },
+      {
+       "round": 3,
+       "text": "inflated attestation does not match the quorum subset on reward amount: excluded"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "safe",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": true,
+      "reward_inflated_by": 1,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "inflated_reward_excluded_from_quorum_subset",
+     "removed": 0,
+     "rounds": 3,
+     "stalled": 0,
+     "title": "One witness inflates the reward",
+     "witnesses": 5
+    }
+   ],
+   "title": "Reward manipulation"
+  },
+  {
+   "id": "S-11",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "quorum is reached, but the claim owner spent the reward funds between commit and claim"
+      },
+      {
+       "round": 1,
+       "text": "reward distribution fails; the main transfer is rolled back and the claim is kept for a retry after the reward pool is refilled"
+      },
+      {
+       "round": 3,
+       "text": "quorum reached, then finalize fails tecUNFUNDED_PAYMENT: main transfer rolled back, claim kept"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "degraded",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": true,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "reward_pool_unfunded_claim_kept_for_retry",
+     "removed": 0,
+     "rounds": 3,
+     "stalled": 0,
+     "title": "Reward pool unfunded at claim time",
+     "witnesses": 5
+    }
+   ],
+   "title": "Reward pool unfunded"
+  },
+  {
+   "id": "S-12",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "the bridge claim ID counter sits at its maximum, 4294967295"
+      },
+      {
+       "round": 1,
+       "text": "the next XChainCreateClaimID overflows and fails; the bridge can no longer issue claim IDs"
+      },
+      {
+       "round": 1,
+       "text": "next claim ID overflows the uint32 counter: tecINTERNAL"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "halted",
+     "params": {
+      "claim_id_at_max": true,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": false,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "claim_id_counter_at_maximum",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Claim ID counter at maximum",
+     "witnesses": 5
+    }
+   ],
+   "title": "Claim-ID exhaustion"
+  },
+  {
+   "id": "S-13",
+   "runs": [
+    {
+     "colluding": 0,
+     "events": [
+      {
+       "round": 0,
+       "text": "the door account has no signer list at all"
+      },
+      {
+       "round": 1,
+       "text": "every attestation fails with tecXCHAIN_NO_SIGNERS_LIST; no claim can reach quorum"
+      },
+      {
+       "round": 1,
+       "text": "tecXCHAIN_NO_SIGNERS_LIST: no attestation can be validated"
+      }
+     ],
+     "honest_weight": 5,
+     "label": "A",
+     "live_weight": 5,
+     "outcome": "halted",
+     "params": {
+      "claim_id_at_max": false,
+      "colluding": 0,
+      "door_key_compromised": false,
+      "master_disabled": true,
+      "no_signer_list": true,
+      "out_of_order": false,
+      "quorum": 3,
+      "removed": 0,
+      "replay_after_success": false,
+      "reward_inflated": false,
+      "reward_inflated_by": 0,
+      "reward_unfunded": false,
+      "stalled": 0,
+      "witnesses": 5
+     },
+     "quorum": 3,
+     "reason": "no_signer_list_on_door",
+     "removed": 0,
+     "rounds": 1,
+     "stalled": 0,
+     "title": "Door without a signer list",
+     "witnesses": 5
+    }
+   ],
+   "title": "No signer list on the door"
+  }
+ ],
+ "threshold_table": [
+  {
+   "colluding_at_boundary": 0,
+   "honest_at_boundary": 1,
+   "honest_reaches_quorum": true,
+   "min_colluding_to_exploit": 1,
+   "outcome_at_boundary": "safe",
+   "quorum": 1,
+   "witnesses": 1
+  },
+  {
+   "colluding_at_boundary": 1,
+   "honest_at_boundary": 2,
+   "honest_reaches_quorum": true,
+   "min_colluding_to_exploit": 2,
+   "outcome_at_boundary": "safe",
+   "quorum": 2,
+   "witnesses": 3
+  },
+  {
+   "colluding_at_boundary": 2,
+   "honest_at_boundary": 3,
+   "honest_reaches_quorum": true,
+   "min_colluding_to_exploit": 3,
+   "outcome_at_boundary": "safe",
+   "quorum": 3,
+   "witnesses": 5
+  },
+  {
+   "colluding_at_boundary": 3,
+   "honest_at_boundary": 4,
+   "honest_reaches_quorum": true,
+   "min_colluding_to_exploit": 4,
+   "outcome_at_boundary": "safe",
+   "quorum": 4,
+   "witnesses": 7
+  },
+  {
+   "colluding_at_boundary": 4,
+   "honest_at_boundary": 4,
+   "honest_reaches_quorum": false,
+   "min_colluding_to_exploit": 5,
+   "outcome_at_boundary": "degraded",
+   "quorum": 5,
+   "witnesses": 8
+  },
+  {
+   "colluding_at_boundary": 3,
+   "honest_at_boundary": 5,
+   "honest_reaches_quorum": true,
+   "min_colluding_to_exploit": 4,
+   "outcome_at_boundary": "safe",
+   "quorum": 4,
+   "witnesses": 8
+  },
+  {
+   "colluding_at_boundary": 16,
+   "honest_at_boundary": 16,
+   "honest_reaches_quorum": false,
+   "min_colluding_to_exploit": 17,
+   "outcome_at_boundary": "degraded",
+   "quorum": 17,
+   "witnesses": 32
+  }
+ ],
+ "totals": {
+  "degraded": 3,
+  "exploited": 4,
+  "halted": 3,
+  "runs": 18,
+  "safe": 8,
+  "scenarios": 13
+ }
+}

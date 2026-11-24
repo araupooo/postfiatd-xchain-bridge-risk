@@ -1,0 +1,271 @@
+{
+ "checks": [
+  {
+   "check": "run-summary.json identical (ignoring volatile fields)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "derived/probe-results.json identical (ignoring volatile fields)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "derived/scenario-matrix.json identical (ignoring volatile fields)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "derived/xchain-bridge-results.json identical (ignoring volatile fields)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "all timing values non-negative (loose band, never exact)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "deterministic output file sets match",
+   "pass": true,
+   "detail": "shipped-only=[] fresh-only=[]"
+  },
+  {
+   "check": "outputs/probe-run.log identical (timestamp lines stripped)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "outputs/run.log identical (timestamp lines stripped)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-hashes.json identical (ignoring volatile fields)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E01.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E02.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E03.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E04.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E05.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E06.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E07.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E08.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E09.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E10.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E11.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E12.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E13.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E14.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E15.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E16.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E17.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E18.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E19.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E20.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E21.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E22.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E23.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E24.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E25.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E26.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E27.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E28.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E29.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E30.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E31.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E32.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E33.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E34.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E35.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E36.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E37.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E38.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E39.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E40.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E41.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E42.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E43.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "fixtures/source-excerpts/E44.txt identical (SHA-256)",
+   "pass": true,
+   "detail": ""
+  }
+ ],
+ "passed": 53,
+ "total": 53
+}
