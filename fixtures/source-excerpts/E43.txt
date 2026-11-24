@@ -1,0 +1,42 @@
+# Source excerpt E43 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/SetSignerList.cpp, lines 295-328.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: b19b9c620991deb216f36cb275a61444b88b5a2a5c861b7ef2e5dc29d000343d
+# Source file git blob SHA: 010b6baa960e0cc8a0b97d37194d1690e8820235
+# Source file size: 15256 bytes
+
+# --- src/xrpld/app/tx/detail/SetSignerList.cpp lines 295-328 ---
+    // quorum can be reached.
+    std::uint64_t allSignersWeight(0);
+    for (auto const& signer : signers)
+    {
+        std::uint32_t const weight = signer.weight;
+        if (weight <= 0)
+        {
+            JLOG(j.trace()) << "Every signer must have a positive weight.";
+            return temBAD_WEIGHT;
+        }
+
+        allSignersWeight += signer.weight;
+
+        if (signer.account == account)
+        {
+            JLOG(j.trace()) << "A signer may not self reference account.";
+            return temBAD_SIGNER;
+        }
+
+        if (signer.tag && !expandedSignerList)
+        {
+            JLOG(j.trace()) << "Malformed transaction: sfWalletLocator "
+                               "specified in SignerEntry "
+                            << "but featureExpandedSignerList is not enabled.";
+            return temMALFORMED;
+        }
+
+        // Don't verify that the signer accounts exist.  Non-existent accounts
+        // may be phantom accounts (which are permitted).
+    }
+    if ((quorum <= 0) || (allSignersWeight < quorum))
+    {
+        JLOG(j.trace()) << "Quorum is unreachable";
+        return temBAD_QUORUM;

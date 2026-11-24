@@ -1,0 +1,28 @@
+# Source excerpt E40 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/libxrpl/protocol/STXChainBridge.cpp, lines 51-70.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 69823471c1bf4fcc952444c6eec850d05ba8f2baecd5a5d5365f654b58d7229c
+# Source file git blob SHA: e835735f089fb54227620cb06a33d945bd220e60
+# Source file size: 7160 bytes
+
+# --- src/libxrpl/protocol/STXChainBridge.cpp lines 51-70 ---
+    AccountID const& srcChainDoor,
+    Issue const& srcChainIssue,
+    AccountID const& dstChainDoor,
+    Issue const& dstChainIssue)
+    : STBase{sfXChainBridge}
+    , lockingChainDoor_{sfLockingChainDoor, srcChainDoor}
+    , lockingChainIssue_{sfLockingChainIssue, srcChainIssue}
+    , issuingChainDoor_{sfIssuingChainDoor, dstChainDoor}
+    , issuingChainIssue_{sfIssuingChainIssue, dstChainIssue}
+{
+}
+
+STXChainBridge::STXChainBridge(STObject const& o)
+    : STBase{sfXChainBridge}
+    , lockingChainDoor_{sfLockingChainDoor, o[sfLockingChainDoor]}
+    , lockingChainIssue_{sfLockingChainIssue, o[sfLockingChainIssue]}
+    , issuingChainDoor_{sfIssuingChainDoor, o[sfIssuingChainDoor]}
+    , issuingChainIssue_{sfIssuingChainIssue, o[sfIssuingChainIssue]}
+{
+}

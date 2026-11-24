@@ -1,0 +1,20 @@
+# Source excerpt E44 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: include/xrpl/protocol/STTx.h, lines 53-64.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 1aeb29d41d3c8157e1a07c91fbceece5b0592da0db9925e4d8059e754ae1bfff
+# Source file git blob SHA: ac0223ee7776a6aece1546c7958032cc72233951
+# Source file size: 7008 bytes
+
+# --- include/xrpl/protocol/STTx.h lines 53-64 ---
+    static std::size_t const minMultiSigners = 1;
+
+    // if rules are not supplied then the largest possible value is returned
+    static std::size_t
+    maxMultiSigners(Rules const* rules = 0)
+    {
+        if (rules && !rules->enabled(featureExpandedSignerList))
+            return 8;
+
+        return 32;
+    }
+

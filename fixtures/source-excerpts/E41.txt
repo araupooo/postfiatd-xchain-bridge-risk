@@ -1,0 +1,53 @@
+# Source excerpt E41 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/libxrpl/protocol/STXChainBridge.cpp, lines 95-139.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 69823471c1bf4fcc952444c6eec850d05ba8f2baecd5a5d5365f654b58d7229c
+# Source file git blob SHA: e835735f089fb54227620cb06a33d945bd220e60
+# Source file size: 7160 bytes
+
+# --- src/libxrpl/protocol/STXChainBridge.cpp lines 95-139 ---
+                    "STXChainBridge extra field detected: " + name);
+            }
+        }
+        return true;
+    };
+    checkExtra(v);
+
+    Json::Value const& lockingChainDoorStr = v[jss::LockingChainDoor];
+    Json::Value const& lockingChainIssue = v[jss::LockingChainIssue];
+    Json::Value const& issuingChainDoorStr = v[jss::IssuingChainDoor];
+    Json::Value const& issuingChainIssue = v[jss::IssuingChainIssue];
+
+    if (!lockingChainDoorStr.isString())
+    {
+        Throw<std::runtime_error>(
+            "STXChainBridge LockingChainDoor must be a string Json value");
+    }
+    if (!issuingChainDoorStr.isString())
+    {
+        Throw<std::runtime_error>(
+            "STXChainBridge IssuingChainDoor must be a string Json value");
+    }
+
+    auto const lockingChainDoor =
+        parseBase58<AccountID>(lockingChainDoorStr.asString());
+    auto const issuingChainDoor =
+        parseBase58<AccountID>(issuingChainDoorStr.asString());
+    if (!lockingChainDoor)
+    {
+        Throw<std::runtime_error>(
+            "STXChainBridge LockingChainDoor must be a valid account");
+    }
+    if (!issuingChainDoor)
+    {
+        Throw<std::runtime_error>(
+            "STXChainBridge IssuingChainDoor must be a valid account");
+    }
+
+    lockingChainDoor_ = STAccount{sfLockingChainDoor, *lockingChainDoor};
+    lockingChainIssue_ =
+        STIssue{sfLockingChainIssue, issueFromJson(lockingChainIssue)};
+    issuingChainDoor_ = STAccount{sfIssuingChainDoor, *issuingChainDoor};
+    issuingChainIssue_ =
+        STIssue{sfIssuingChainIssue, issueFromJson(issuingChainIssue)};
+}

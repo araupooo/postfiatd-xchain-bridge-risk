@@ -1,0 +1,49 @@
+# Source excerpt E39 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: include/xrpl/protocol/XChainAttestations.h, lines 59-99.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: a48fe7ee6c43fb67a0c17fc4d2c90ad02355bede3ffe28f3a6e0a2e95634f22f
+# Source file git blob SHA: 92fd04731d0c9b13bcc34cdd64f51cfec9f91873
+# Source file size: 14313 bytes
+
+# --- include/xrpl/protocol/XChainAttestations.h lines 59-99 ---
+    AccountID rewardAccount;
+    // Amount was transfered on the locking chain
+    bool wasLockingChainSend;
+
+    explicit AttestationBase(
+        AccountID attestationSignerAccount_,
+        PublicKey const& publicKey_,
+        Buffer signature_,
+        AccountID const& sendingAccount_,
+        STAmount const& sendingAmount_,
+        AccountID const& rewardAccount_,
+        bool wasLockingChainSend_);
+
+    AttestationBase(AttestationBase const&) = default;
+
+    virtual ~AttestationBase() = default;
+
+    AttestationBase&
+    operator=(AttestationBase const&) = default;
+
+    // verify that the signature attests to the data.
+    bool
+    verify(STXChainBridge const& bridge) const;
+
+protected:
+    explicit AttestationBase(STObject const& o);
+    explicit AttestationBase(Json::Value const& v);
+
+    [[nodiscard]] static bool
+    equalHelper(AttestationBase const& lhs, AttestationBase const& rhs);
+
+    [[nodiscard]] static bool
+    sameEventHelper(AttestationBase const& lhs, AttestationBase const& rhs);
+
+    void
+    addHelper(STObject& o) const;
+
+private:
+    [[nodiscard]] virtual std::vector<std::uint8_t>
+    message(STXChainBridge const& bridge) const = 0;
+};

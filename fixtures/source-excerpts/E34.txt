@@ -1,0 +1,20 @@
+# Source excerpt E34 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.h, lines 76-87.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: b0aedf93c3190f61fe93b3f42db079e96cc72397b8cc3ee4bb22cd80475cff95
+# Source file git blob SHA: 0e9c0358d214f6a726bb7fde99c226c3f77966f1
+# Source file size: 8742 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.h lines 76-87 ---
+//------------------------------------------------------------------------------
+
+// Claim funds from a `XChainCommit` transaction. This is normally not needed,
+// but may be used to handle transaction failures or if the destination account
+// was not specified in the `XChainCommit` transaction. It may only be used
+// after a quorum of signatures have been sent from the witness servers.
+//
+// If the transaction succeeds in moving funds, the referenced `XChainClaimID`
+// ledger object will be destroyed. This prevents transaction replay. If the
+// transaction fails, the `XChainClaimID` will not be destroyed and the
+// transaction may be re-run with different parameters.
+class XChainClaim : public Transactor

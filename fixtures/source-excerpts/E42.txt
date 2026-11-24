@@ -1,0 +1,22 @@
+# Source excerpt E42 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/SetSignerList.cpp, lines 180-193.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: b19b9c620991deb216f36cb275a61444b88b5a2a5c861b7ef2e5dc29d000343d
+# Source file git blob SHA: 010b6baa960e0cc8a0b97d37194d1690e8820235
+# Source file size: 15256 bytes
+
+# --- src/xrpld/app/tx/detail/SetSignerList.cpp lines 180-193 ---
+    // So, at a minimum, adding a SignerList with 1 entry costs 3 OwnerCount
+    // units.  A SignerList with 8 entries would cost 10 OwnerCount units.
+    //
+    // The static_cast should always be safe since entryCount should always
+    // be in the range from 1 to 8 (or 32 if ExpandedSignerList is enabled).
+    // We've got a lot of room to grow.
+    XRPL_ASSERT(
+        entryCount >= STTx::minMultiSigners,
+        "ripple::signerCountBasedOwnerCountDelta : minimum signers");
+    XRPL_ASSERT(
+        entryCount <= STTx::maxMultiSigners(&rules),
+        "ripple::signerCountBasedOwnerCountDelta : maximum signers");
+    return 2 + static_cast<int>(entryCount);
+}

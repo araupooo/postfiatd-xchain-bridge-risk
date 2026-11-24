@@ -1,0 +1,15 @@
+# Source excerpt E35 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/libxrpl/protocol/XChainAttestations.cpp, lines 100-106.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: f1df44956e798bd8f0b5b87a5d8c5a8f522f2f12630153e1603ff8bde9e48c01
+# Source file git blob SHA: e61224b570c3baec5baf6c0567d77eb5ae20230b
+# Source file size: 23053 bytes
+
+# --- src/libxrpl/protocol/XChainAttestations.cpp lines 100-106 ---
+
+bool
+AttestationBase::verify(STXChainBridge const& bridge) const
+{
+    std::vector<std::uint8_t> msg = message(bridge);
+    return ripple::verify(publicKey, makeSlice(msg), signature);
+}
