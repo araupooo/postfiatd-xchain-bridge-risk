@@ -1,0 +1,6 @@
+clean_reproduce.sh fresh run (cycle 1)
+shipped simulator status: pass
+fresh simulator status: pass
+shipped probe status: pass
+fresh probe status: pass
+compare: 53/53 checks PASS

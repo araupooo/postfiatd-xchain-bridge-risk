@@ -1,0 +1,10 @@
+# run.log — deterministic output digests (no timestamps, no absolute paths)
+# step extract_excerpts: pass
+# step xchain_bridge_model_config: pass
+# step simulator: pass
+# step probe: pass
+2ed2ecc7fc34f19d02dd85e2af5f22f9202f8c0239cda999ef7ed48a8e36ce52  outputs/derived/probe-results.json
+0bb61288b50ec518d3a7b0e73f625857e2ce54048d6c0adb885e2ca8b0f94bd0  outputs/derived/run-summary.json
+6b459ece4069f978314e491ee1cb164c3e26c2c89efef4e874ffdf0f6c8c49ff  outputs/derived/scenario-matrix.json
+6acdd9a3c631f46aca3c143b58ded36d4eb97321526da6f4dd37e9ea190d3a81  outputs/derived/xchain-bridge-results.json
+f50ed592b7e30f1477f565da5911971a5428fd6706f77159267651c20eae697c  outputs/probe-run.log
