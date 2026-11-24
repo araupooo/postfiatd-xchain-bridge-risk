@@ -1,0 +1,78 @@
+{
+ "pack": "Cross-Chain Bridge Risk in postfiatd",
+ "pinned_commit": "0085a1ff885d6a446369cf73a4430f75af22be55",
+ "counts": {
+  "rules": {
+   "total": 45,
+   "by_status": {
+    "VERIFIED": 38,
+    "SPECIFIED": 4,
+    "MODELLED": 2,
+    "UNTESTABLE": 1
+   }
+  },
+  "scenarios": {
+   "total": 13,
+   "runs": 18,
+   "safe": 8,
+   "degraded": 3,
+   "exploited": 4,
+   "halted": 3
+  },
+  "findings": {
+   "total": 12,
+   "by_severity": {
+    "HIGH": 3,
+    "LOW": 3,
+    "MEDIUM": 6
+   },
+   "by_status": {
+    "VERIFIED": 12
+   }
+  },
+  "claims": {
+   "total": 24,
+   "by_status": {
+    "MODELLED": 4,
+    "SPECIFIED": 2,
+    "UNTESTABLE": 2,
+    "VERIFIED": 16
+   }
+  },
+  "risks": {
+   "total": 14,
+   "by_severity": {
+    "HIGH": 3,
+    "LOW": 3,
+    "MEDIUM": 8
+   }
+  },
+  "gaps": 8
+ },
+ "probes": {
+  "passed": 12,
+  "total": 12
+ },
+ "results_sha256": "6acdd9a3c631f46aca3c143b58ded36d4eb97321526da6f4dd37e9ea190d3a81",
+ "matrix_sha256": "6b459ece4069f978314e491ee1cb164c3e26c2c89efef4e874ffdf0f6c8c49ff",
+ "verify_digests_sha256": "eb1d4a11f1240cad6399ceb3c2c8c94946326826eabac293413378807090807a",
+ "verification": {
+  "excerpts": 44,
+  "source_files": 7
+ },
+ "reproductions": [
+  {
+   "label": "fresh-clone-1",
+   "log": "outputs/fresh-clone-run.log",
+   "sha256": "d7bd8b507fdf812ceddda939b31cb358cff1bfa479cd9c0ee2555ccdf1d445a1",
+   "status": "pass"
+  },
+  {
+   "label": "fresh-clone-2",
+   "log": "outputs/fresh-clone-2-run.log",
+   "sha256": "d7bd8b507fdf812ceddda939b31cb358cff1bfa479cd9c0ee2555ccdf1d445a1",
+   "status": "pass"
+  }
+ ],
+ "status": "SOURCE-DERIVED"
+}
