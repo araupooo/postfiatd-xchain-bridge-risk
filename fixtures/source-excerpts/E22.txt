@@ -1,0 +1,52 @@
+# Source excerpt E22 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 1552-1595.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 1552-1595 ---
+BridgeModify::preflight(PreflightContext const& ctx)
+{
+    auto const account = ctx.tx[sfAccount];
+    auto const reward = ctx.tx[~sfSignatureReward];
+    auto const minAccountCreate = ctx.tx[~sfMinAccountCreateAmount];
+    auto const bridgeSpec = ctx.tx[sfXChainBridge];
+    bool const clearAccountCreate =
+        ctx.tx.getFlags() & tfClearAccountCreateAmount;
+
+    if (!reward && !minAccountCreate && !clearAccountCreate)
+    {
+        // Must change something
+        return temMALFORMED;
+    }
+
+    if (minAccountCreate && clearAccountCreate)
+    {
+        // Can't both clear and set account create in the same txn
+        return temMALFORMED;
+    }
+
+    if (bridgeSpec.lockingChainDoor() != account &&
+        bridgeSpec.issuingChainDoor() != account)
+    {
+        return temXCHAIN_BRIDGE_NONDOOR_OWNER;
+    }
+
+    if (reward && (!isXRP(*reward) || reward->signum() < 0))
+    {
+        return temXCHAIN_BRIDGE_BAD_REWARD_AMOUNT;
+    }
+
+    if (minAccountCreate &&
+        ((!isXRP(*minAccountCreate) || minAccountCreate->signum() <= 0) ||
+         !isXRP(bridgeSpec.lockingChainIssue()) ||
+         !isXRP(bridgeSpec.issuingChainIssue())))
+    {
+        return temXCHAIN_BRIDGE_BAD_MIN_ACCOUNT_CREATE_AMOUNT;
+    }
+
+    return tesSUCCESS;
+}
+
+TER

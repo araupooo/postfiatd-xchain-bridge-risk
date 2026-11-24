@@ -1,0 +1,69 @@
+# Source excerpt E26 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 1882-1942.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 1882-1942 ---
+XChainCommit::preflight(PreflightContext const& ctx)
+{
+    auto const amount = ctx.tx[sfAmount];
+    auto const bridgeSpec = ctx.tx[sfXChainBridge];
+
+    if (amount.signum() <= 0 || !isLegalNet(amount))
+        return temBAD_AMOUNT;
+
+    if (amount.issue() != bridgeSpec.lockingChainIssue() &&
+        amount.issue() != bridgeSpec.issuingChainIssue())
+        return temBAD_ISSUER;
+
+    return tesSUCCESS;
+}
+
+TER
+XChainCommit::preclaim(PreclaimContext const& ctx)
+{
+    auto const bridgeSpec = ctx.tx[sfXChainBridge];
+    auto const amount = ctx.tx[sfAmount];
+
+    auto const sleBridge = readBridge(ctx.view, bridgeSpec);
+    if (!sleBridge)
+    {
+        return tecNO_ENTRY;
+    }
+
+    AccountID const thisDoor = (*sleBridge)[sfAccount];
+    AccountID const account = ctx.tx[sfAccount];
+
+    if (thisDoor == account)
+    {
+        // Door account can't lock funds onto itself
+        return tecXCHAIN_SELF_COMMIT;
+    }
+
+    bool isLockingChain = false;
+    {
+        if (thisDoor == bridgeSpec.lockingChainDoor())
+            isLockingChain = true;
+        else if (thisDoor == bridgeSpec.issuingChainDoor())
+            isLockingChain = false;
+        else
+            return tecINTERNAL;  // LCOV_EXCL_LINE
+    }
+
+    if (isLockingChain)
+    {
+        if (bridgeSpec.lockingChainIssue() != ctx.tx[sfAmount].issue())
+            return tecXCHAIN_BAD_TRANSFER_ISSUE;
+    }
+    else
+    {
+        if (bridgeSpec.issuingChainIssue() != ctx.tx[sfAmount].issue())
+            return tecXCHAIN_BAD_TRANSFER_ISSUE;
+    }
+
+    return tesSUCCESS;
+}
+
+TER
