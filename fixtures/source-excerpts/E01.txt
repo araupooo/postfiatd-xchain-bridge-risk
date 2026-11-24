@@ -1,0 +1,33 @@
+# Source excerpt E01 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 72-96.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 72-96 ---
+   This account is called a "door account". Much in the same way that a door is
+   used to go from one room to another, a door account is used to move from one
+   chain to another. This account will be jointly controlled by a set of witness
+   servers by using the ledger's multi-signature support. The master key will be
+   disabled. These witness servers are trusted in the sense that if a quorum of
+   them collude, they can steal the funds put into trust.
+
+   This also requires a way to prove that assets were put into the box - either
+   a locking-chain-token on the locking chain or returning an
+   issuing-chain-token on the issuing chain. A set of servers called "witness
+   servers" fill this role. These servers watch the ledger for these
+   transactions, and attest that the given events happened on the different
+   chains by signing messages with the event information.
+
+   There needs to be a way to prevent the attestations from the witness
+   servers from being used more than once. "Claim ids" fill this role. A claim
+   id must be acquired on the destination chain before the asset is "put into
+   the box" on the source chain. This claim id has a unique id, and once it is
+   destroyed it can never exist again (it's a simple counter). The attestations
+   reference this claim id, and are accumulated on the claim id. Once a quorum
+   is reached, funds can move. Once the funds move, the claim id is destroyed.
+
+   Finally, a claim id requires that the sender has an account on the
+   destination chain. For some chains, this can be a problem - especially if
+   the wrapped asset represents XRP, and XRP is needed to create an account.

@@ -1,0 +1,73 @@
+# Source excerpt E02 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 111-175.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 111-175 ---
+checkAttestationPublicKey(
+    ReadView const& view,
+    std::unordered_map<AccountID, std::uint32_t> const& signersList,
+    AccountID const& attestationSignerAccount,
+    PublicKey const& pk,
+    beast::Journal j)
+{
+    if (!signersList.contains(attestationSignerAccount))
+    {
+        return tecNO_PERMISSION;
+    }
+
+    AccountID const accountFromPK = calcAccountID(pk);
+
+    if (auto const sleAttestationSigningAccount =
+            view.read(keylet::account(attestationSignerAccount)))
+    {
+        if (accountFromPK == attestationSignerAccount)
+        {
+            // master key
+            if (sleAttestationSigningAccount->getFieldU32(sfFlags) &
+                lsfDisableMaster)
+            {
+                JLOG(j.trace()) << "Attempt to add an attestation with "
+                                   "disabled master key.";
+                return tecXCHAIN_BAD_PUBLIC_KEY_ACCOUNT_PAIR;
+            }
+        }
+        else
+        {
+            // regular key
+            if (std::optional<AccountID> regularKey =
+                    (*sleAttestationSigningAccount)[~sfRegularKey];
+                regularKey != accountFromPK)
+            {
+                if (!regularKey)
+                {
+                    JLOG(j.trace())
+                        << "Attempt to add an attestation with "
+                           "account present and non-present regular key.";
+                }
+                else
+                {
+                    JLOG(j.trace()) << "Attempt to add an attestation with "
+                                       "account present and mismatched "
+                                       "regular key/public key.";
+                }
+                return tecXCHAIN_BAD_PUBLIC_KEY_ACCOUNT_PAIR;
+            }
+        }
+    }
+    else
+    {
+        // account does not exist.
+        if (calcAccountID(pk) != attestationSignerAccount)
+        {
+            JLOG(j.trace())
+                << "Attempt to add an attestation with non-existant account "
+                   "and mismatched pk/account pair.";
+            return tecXCHAIN_BAD_PUBLIC_KEY_ACCOUNT_PAIR;
+        }
+    }
+
+    return tesSUCCESS;
+}

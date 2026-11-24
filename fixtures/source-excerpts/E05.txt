@@ -1,0 +1,22 @@
+# Source excerpt E05 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 350-363.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 350-363 ---
+onClaim(
+    XChainClaimAttestations& attestations,
+    ReadView const& view,
+    STAmount const& sendingAmount,
+    bool wasLockingChainSend,
+    std::uint32_t quorum,
+    std::unordered_map<AccountID, std::uint32_t> const& signersList,
+    beast::Journal j)
+{
+    XChainClaimAttestation::MatchFields toMatch{
+        sendingAmount, wasLockingChainSend, std::nullopt};
+    return claimHelper(
+        attestations, view, toMatch, CheckDst::ignore, quorum, signersList, j);
+}

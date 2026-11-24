@@ -1,0 +1,58 @@
+# Source excerpt E03 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 191-240.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 191-240 ---
+claimHelper(
+    XChainAttestationsBase<TAttestation>& attestations,
+    ReadView const& view,
+    typename TAttestation::MatchFields const& toMatch,
+    CheckDst checkDst,
+    std::uint32_t quorum,
+    std::unordered_map<AccountID, std::uint32_t> const& signersList,
+    beast::Journal j)
+{
+    // Remove attestations that are not valid signers. They may be no longer
+    // part of the signers list, or their master key may have been disabled,
+    // or their regular key may have changed
+    attestations.erase_if([&](auto const& a) {
+        return checkAttestationPublicKey(
+                   view, signersList, a.keyAccount, a.publicKey, j) !=
+            tesSUCCESS;
+    });
+
+    // Check if we have quorum for the amount specified on the new claimAtt
+    std::vector<AccountID> rewardAccounts;
+    rewardAccounts.reserve(attestations.size());
+    std::uint32_t weight = 0;
+    for (auto const& a : attestations)
+    {
+        auto const matchR = a.match(toMatch);
+        // The dest must match if claimHelper is being run as a result of an add
+        // attestation transaction. The dst does not need to match if the
+        // claimHelper is being run using an explicit claim transaction.
+        using enum AttestationMatch;
+        if (matchR == nonDstMismatch ||
+            (checkDst == CheckDst::check && matchR != match))
+            continue;
+        auto i = signersList.find(a.keyAccount);
+        if (i == signersList.end())
+        {
+            // LCOV_EXCL_START
+            UNREACHABLE(
+                "ripple::claimHelper : invalid inputs");  // should have already
+                                                          // been checked
+            continue;
+            // LCOV_EXCL_STOP
+        }
+        weight += i->second;
+        rewardAccounts.push_back(a.rewardAccount);
+    }
+
+    if (weight >= quorum)
+        return rewardAccounts;
+
+    return Unexpected(tecXCHAIN_CLAIM_NO_QUORUM);
