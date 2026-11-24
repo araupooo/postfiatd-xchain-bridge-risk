@@ -1,0 +1,79 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check out pinned postfiatd
+        run: |
+          PINNED="0085a1ff885d6a446369cf73a4430f75af22be55"
+          DEST="$HOME/workspace/postfiatd-pin-0085a1f"
+          mkdir -p "$HOME/workspace"
+          git init "$DEST"
+          git -C "$DEST" remote add origin https://github.com/postfiatorg/postfiatd.git
+          git -C "$DEST" fetch --depth 1 origin "$PINNED"
+          git -C "$DEST" checkout FETCH_HEAD
+          git -C "$DEST" rev-parse HEAD
+
+      - name: Verify shipped digests
+        run: bash scripts/verify_digests.sh
+
+      - name: Show simulator interface
+        run: python3 src/xchain_bridge_model.py --help
+
+      - name: Run full suite
+        run: bash scripts/run_all.sh
+
+      - name: Check run summary
+        run: |
+          python3 - <<'EOF'
+          import hashlib
+          import json
+          s = json.load(open("outputs/derived/run-summary.json"))
+          assert s["pinned_commit"] == "0085a1ff885d6a446369cf73a4430f75af22be55", s
+          assert s["scenario_count"] == 13, s
+          assert s["rule_count"] == 45, s
+          assert s["steps"]["xchain_bridge_model_config"] == "pass", s["steps"]
+          assert s["steps"]["simulator"] == "pass", s["steps"]
+          assert s["steps"]["probe"] == "pass", s["steps"]
+          for k, v in s["steps"].items():
+              assert v == "pass" or v.startswith("skipped"), (k, v)
+          m = json.load(open("run-manifest.json"))
+          assert m["counts"]["scenarios"]["total"] == 13, m
+          assert m["counts"]["scenarios"]["runs"] == 18, m
+          assert m["counts"]["scenarios"]["safe"] == 8, m
+          assert m["counts"]["scenarios"]["degraded"] == 3, m
+          assert m["counts"]["scenarios"]["exploited"] == 4, m
+          assert m["counts"]["scenarios"]["halted"] == 3, m
+          assert m["counts"]["rules"]["total"] == 45, m
+          assert m["counts"]["findings"]["total"] == 12, m
+          assert m["counts"]["claims"]["total"] == 24, m
+          assert m["counts"]["risks"]["total"] == 14, m
+          assert m["counts"]["gaps"] == 8, m
+          assert m["verification"]["excerpts"] == 44, m
+          assert m["verification"]["source_files"] == 7, m
+          assert m["probes"]["passed"] == m["probes"]["total"] == 12, m
+          assert len(m["reproductions"]) == 2, m
+          assert m["verify_digests_sha256"] is not None, m
+          h = hashlib.sha256()
+          with open("outputs/verify-digests.log", "rb") as fh:
+              for chunk in iter(lambda: fh.read(65536), b""):
+                  h.update(chunk)
+          assert m["verify_digests_sha256"] == h.hexdigest(), m
+          print("run-summary OK:", s["steps"])
+          EOF
+
+      - name: Verify regenerated digests
+        run: bash scripts/verify_digests.sh
