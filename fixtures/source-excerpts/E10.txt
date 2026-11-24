@@ -1,0 +1,72 @@
+# Source excerpt E10 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 852-915.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 852-915 ---
+template <class TIter>
+TER
+applyClaimAttestations(
+    ApplyView& view,
+    RawView& rawView,
+    TIter attBegin,
+    TIter attEnd,
+    STXChainBridge const& bridgeSpec,
+    STXChainBridge::ChainType const srcChain,
+    std::unordered_map<AccountID, std::uint32_t> const& signersList,
+    std::uint32_t quorum,
+    beast::Journal j)
+{
+    if (attBegin == attEnd)
+        return tesSUCCESS;
+
+    PaymentSandbox psb(&view);
+
+    auto const claimIDKeylet =
+        keylet::xChainClaimID(bridgeSpec, attBegin->claimID);
+
+    struct ScopeResult
+    {
+        OnNewAttestationResult newAttResult;
+        STAmount rewardAmount;
+        AccountID cidOwner;
+    };
+
+    auto const scopeResult = [&]() -> Expected<ScopeResult, TER> {
+        // This lambda is ugly - admittedly. The purpose of this lambda is to
+        // limit the scope of sles so they don't overlap with
+        // `finalizeClaimHelper`. Since `finalizeClaimHelper` can create child
+        // views, it's important that the sle's lifetime doesn't overlap.
+        auto const sleClaimID = psb.peek(claimIDKeylet);
+        if (!sleClaimID)
+            return Unexpected(tecXCHAIN_NO_CLAIM_ID);
+
+        // Add claims that are part of the signer's list to the "claims" vector
+        std::vector<Attestations::AttestationClaim> atts;
+        atts.reserve(std::distance(attBegin, attEnd));
+        for (auto att = attBegin; att != attEnd; ++att)
+        {
+            if (!signersList.contains(att->attestationSignerAccount))
+                continue;
+            atts.push_back(*att);
+        }
+
+        if (atts.empty())
+        {
+            return Unexpected(tecXCHAIN_PROOF_UNKNOWN_KEY);
+        }
+
+        AccountID const otherChainSource = (*sleClaimID)[sfOtherChainSource];
+        if (attBegin->sendingAccount != otherChainSource)
+        {
+            return Unexpected(tecXCHAIN_SENDING_ACCOUNT_MISMATCH);
+        }
+
+        {
+            STXChainBridge::ChainType const dstChain =
+                STXChainBridge::otherChain(srcChain);
+
+            STXChainBridge::ChainType const attDstChain =
+                STXChainBridge::dstChain(attBegin->wasLockingChainSend);

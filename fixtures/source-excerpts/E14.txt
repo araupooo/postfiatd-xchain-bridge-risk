@@ -1,0 +1,79 @@
+# Source excerpt E14 — postfiatd 0085a1ff885d6a446369cf73a4430f75af22be55.
+# File: src/xrpld/app/tx/detail/XChainBridge.cpp, lines 1121-1191.
+# Line numbers verified with grep -n on a local checkout of the pinned commit.
+# Source file SHA-256: 6ded57c27847fb9d2987811b71f01ee7ab0b8b55a31a6f28a6ab3daca60917eb
+# Source file git blob SHA: d7731d8d98467438980d761a4cfa42e9089b194a
+# Source file size: 72995 bytes
+
+# --- src/xrpld/app/tx/detail/XChainBridge.cpp lines 1121-1191 ---
+    auto const& [attResult, createCID, curAtts] = scopeResult.value();
+    auto const& [rewardAccounts, attListChanged] = attResult;
+
+    // Account create transactions must happen in order
+    if (rewardAccounts && claimCount + 1 == attBegin->createCount)
+    {
+        auto const r = finalizeClaimHelper(
+            psb,
+            bridgeSpec,
+            attBegin->toCreate,
+            /*dstTag*/ std::nullopt,
+            doorAccount,
+            attBegin->sendingAmount,
+            /*rewardPoolSrc*/ doorAccount,
+            attBegin->rewardAmount,
+            *rewardAccounts,
+            srcChain,
+            claimIDKeylet,
+            OnTransferFail::removeClaim,
+            DepositAuthPolicy::normal,
+            j);
+
+        auto const rTer = r.ter();
+
+        if (!isTesSuccess(rTer))
+        {
+            if (rTer == tecINTERNAL || rTer == tecUNFUNDED_PAYMENT ||
+                isTefFailure(rTer))
+                return rTer;
+        }
+        // Move past this claim id even if it fails, so it doesn't block
+        // subsequent claim ids
+        auto const sleBridge = psb.peek(bridgeK);
+        if (!sleBridge)
+            return tecINTERNAL;  // LCOV_EXCL_LINE
+        (*sleBridge)[sfXChainAccountClaimCount] = attBegin->createCount;
+        psb.update(sleBridge);
+    }
+    else if (createCID)
+    {
+        auto const createdSleClaimID = std::make_shared<SLE>(claimIDKeylet);
+        (*createdSleClaimID)[sfAccount] = doorAccount;
+        (*createdSleClaimID)[sfXChainBridge] = bridgeSpec;
+        (*createdSleClaimID)[sfXChainAccountCreateCount] =
+            attBegin->createCount;
+        createdSleClaimID->setFieldArray(
+            sfXChainCreateAccountAttestations, curAtts.toSTArray());
+
+        // Add to owner directory of the door account
+        auto const page = psb.dirInsert(
+            keylet::ownerDir(doorAccount),
+            claimIDKeylet,
+            describeOwnerDir(doorAccount));
+        if (!page)
+            return tecDIR_FULL;  // LCOV_EXCL_LINE
+        (*createdSleClaimID)[sfOwnerNode] = *page;
+
+        auto const sleDoor = psb.peek(doorK);
+        if (!sleDoor)
+            return tecINTERNAL;  // LCOV_EXCL_LINE
+
+        // Reserve was already checked
+        adjustOwnerCount(psb, sleDoor, 1, j);
+        psb.insert(createdSleClaimID);
+        psb.update(sleDoor);
+    }
+
+    psb.apply(rawView);
+
+    return tesSUCCESS;
+}
